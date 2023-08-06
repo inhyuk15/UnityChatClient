@@ -6,7 +6,7 @@ public abstract class ChatClient : IDisposable
 {
     public abstract void Connect(string host, int port);
     public abstract void SendMessage(string message);
-    public abstract IEnumerator ReadData();
+    public abstract IEnumerator ReadData(Action<string> onReceived);
     public abstract void Close();
     public abstract void Dispose();
 }

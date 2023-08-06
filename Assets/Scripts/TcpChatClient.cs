@@ -11,6 +11,8 @@ public class TcpChatClient : ChatClient
     private StreamWriter writer;
     private StreamReader reader;
 
+    // public ChatScrollViewController scrollViewController;
+
     public override void Connect(string host, int port)
     {
         tcpClient = new TcpClient();
@@ -29,12 +31,14 @@ public class TcpChatClient : ChatClient
         }
     }
 
-    public override IEnumerator ReadData()
+    public override IEnumerator ReadData(Action<string> onReceived)
     {
         while (tcpClient.Connected)
         {
             yield return new WaitUntil(() => tcpClient.GetStream().DataAvailable);
             var data = reader.ReadLine();
+            // scrollViewController.AddMessage(data);
+            onReceived?.Invoke(data);
             Debug.Log("Received from server : " + data);
         }
     }

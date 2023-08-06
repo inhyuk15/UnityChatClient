@@ -10,14 +10,14 @@ public class CustomInputController : MonoBehaviour
 {
     public TMP_InputField inputField;
 
-    private ChatClient chatClient;
+    // private ChatClient chatClient;
 
     // private TcpClient client;
     // private StreamWriter writer;
     // private StreamReader reader;
 
-    private string host = "localhost";
-    private int port = 4000;
+    // private string host = "localhost";
+    // private int port = 4000;
 
     void Start()
     {
@@ -33,8 +33,8 @@ public class CustomInputController : MonoBehaviour
             return addedChar;
         };
 
-        chatClient = new TcpChatClient();
-        chatClient.Connect("localhost", 4000);
+        // chatClient = new TcpChatClient();
+        // chatClient.Connect("localhost", 4000);
 
         // // client = new TcpClient();
         // // yield return client.ConnectAsync(host, port);
@@ -43,7 +43,7 @@ public class CustomInputController : MonoBehaviour
         // writer = new StreamWriter(stream) { AutoFlush = true };
         // reader = new StreamReader(stream);
 
-        StartCoroutine(chatClient.ReadData());
+        // StartCoroutine(chatClient.ReadData());
     }
 
     // IEnumerator ReadData()
@@ -59,11 +59,14 @@ public class CustomInputController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+        if (inputField.isFocused)
         {
-            if (Input.GetKeyDown(KeyCode.Return))
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
-                PrepareForNextInput();
+                if (Input.GetKeyDown(KeyCode.Return))
+                {
+                    PrepareForNextInput();
+                }
             }
         }
     }
@@ -82,17 +85,15 @@ public class CustomInputController : MonoBehaviour
 
         if (!string.IsNullOrEmpty(text))
         {
-            Debug.Log("Submitted text: " + text + ", size: " + text.Length);
-            string sendMsg = text + "\n";
-            // writer.WriteLine(sendMsg);
-            chatClient.SendMessage(sendMsg);
+            //     Debug.Log("Submitted text: " + text + ", size: " + text.Length);
+            //     string sendMsg = text + "\n";
+            //     // writer.WriteLine(sendMsg);
+            //     chatClient.SendMessage(sendMsg);
+
+
+            ChatManager.Instance.SendMessage(inputField.text);
             inputField.text = "";
             PrepareForNextInput();
         }
-    }
-
-    void OnDestroy()
-    {
-        chatClient.Close();
     }
 }
