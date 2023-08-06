@@ -10,16 +10,16 @@ public class CustomInputController : MonoBehaviour
 {
     public TMP_InputField inputField;
 
-    // private ChatClient chatClient;
+    private ChatClient chatClient;
 
-    private TcpClient client;
-    private StreamWriter writer;
-    private StreamReader reader;
+    // private TcpClient client;
+    // private StreamWriter writer;
+    // private StreamReader reader;
 
     private string host = "localhost";
     private int port = 4000;
 
-    IEnumerator Start()
+    void Start()
     {
         inputField.onSubmit.AddListener(OnSubmit);
 
@@ -33,34 +33,29 @@ public class CustomInputController : MonoBehaviour
             return addedChar;
         };
 
-        // chatClient = new ChatClient("localhost", 4000);
-        client = new TcpClient();
-        yield return client.ConnectAsync(host, port);
+        chatClient = new TcpChatClient();
+        chatClient.Connect("localhost", 4000);
 
-        var stream = client.GetStream();
-        writer = new StreamWriter(stream) { AutoFlush = true };
-        reader = new StreamReader(stream);
+        // // client = new TcpClient();
+        // // yield return client.ConnectAsync(host, port);
 
-        StartCoroutine(ReadData());
+        // var stream = client.GetStream();
+        // writer = new StreamWriter(stream) { AutoFlush = true };
+        // reader = new StreamReader(stream);
+
+        StartCoroutine(chatClient.ReadData());
     }
 
-    IEnumerator ReadData()
-    {
-        while (client.Connected)
-        {
-            // if (!reader.EndOfStream)
-            // {
-            yield return new WaitUntil(() => client.GetStream().DataAvailable);
+    // IEnumerator ReadData()
+    // {
+    //     while (chatClient.Connected)
+    //     {
+    //         yield return new WaitUntil(() => chatClient.GetStream().DataAvailable);
 
-            var data = reader.ReadLine();
-            Debug.Log("Received from server: " + data);
-            // }
-            // else
-            // {
-            //     yield return null;
-            // }
-        }
-    }
+    //         var data = reader.ReadLine();
+    //         Debug.Log("Received from server: " + data);
+    //     }
+    // }
 
     void Update()
     {
@@ -88,9 +83,9 @@ public class CustomInputController : MonoBehaviour
         if (!string.IsNullOrEmpty(text))
         {
             Debug.Log("Submitted text: " + text + ", size: " + text.Length);
-            // chatClient.SendMessage(text);
             string sendMsg = text + "\n";
-            writer.WriteLine(sendMsg);
+            // writer.WriteLine(sendMsg);
+            chatClient.SendMessage(sendMsg);
             inputField.text = "";
             PrepareForNextInput();
         }
@@ -98,6 +93,6 @@ public class CustomInputController : MonoBehaviour
 
     void OnDestroy()
     {
-        // chatClient.Close();
+        chatClient.Close();
     }
 }
