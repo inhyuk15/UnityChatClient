@@ -23,10 +23,8 @@ public class ChatScrollViewController : MonoBehaviour
 
     private IEnumerator ScrollToBottom()
     {
-        // 프레임 업데이트를 한 번 기다려서 레이아웃 변경을 반영
-        yield return null;
-
-        // 스크롤 위치를 맨 아래로 설정
+        yield return new WaitForSeconds(0.1f);
+        Debug.Log("called");
         scrollRect.verticalNormalizedPosition = 0f;
     }
 }

@@ -11,8 +11,6 @@ public class TcpChatClient : ChatClient
     private StreamWriter writer;
     private StreamReader reader;
 
-    // public ChatScrollViewController scrollViewController;
-
     public override void Connect(string host, int port)
     {
         tcpClient = new TcpClient();
